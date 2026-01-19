@@ -146,6 +146,11 @@
       };
     }
 
+    // Convert Celsius to Fahrenheit
+    function celsiusToFahrenheit(celsius) {
+      return celsius * 9 / 5 + 32;
+    }
+
     // Get unique nodes and their stats from the data
     function extractNodes(data) {
       const nodesMap = new Map();
@@ -220,7 +225,7 @@
       // Add individual node cards
       nodes.forEach(node => {
         const stats = calculateNodeStats(node.readings);
-        const lastTemp = node.lastReading ? node.lastReading.temperature.toFixed(1) : '--';
+        const lastTemp = node.lastReading ? celsiusToFahrenheit(node.lastReading.temperature).toFixed(1) : '--';
         const lastTime = node.lastReading ? formatRelativeTime(node.lastReading.time) : '';
 
         html += `
@@ -228,7 +233,7 @@
             <div class="node-icon">&#128225;</div>
             <div class="node-title">Node ${node.id}</div>
             <div class="node-stats">
-              ${lastTemp}°C ${lastTime}<br>
+              ${lastTemp}°F ${lastTime}<br>
               ${stats.count} readings
             </div>
           </a>
