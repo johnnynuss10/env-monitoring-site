@@ -62,10 +62,10 @@ function groupByDate(data) {
   return groups;
 }
 
-// Extract temperature value from node:temp format (e.g., "3:25.5" -> "25.5")
+// Extract temperature value from temp:node format (e.g., "25.5:3" -> "25.5")
 function extractTemperature(item) {
   const value = String(item.value);
-  const tempMatch = value.match(/[\d.]+$/);
+  const tempMatch = value.match(/^[\d.]+/);
   return tempMatch ? tempMatch[0] : value;
 }
 
