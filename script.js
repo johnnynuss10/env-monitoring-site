@@ -34,6 +34,11 @@ function parseValue(valueString) {
   };
 }
 
+// Convert Celsius to Fahrenheit
+function celsiusToFahrenheit(celsius) {
+  return celsius * 9 / 5 + 32;
+}
+
 // Format relative time
 function formatRelativeTime(dateString) {
   const date = new Date(dateString);
@@ -86,9 +91,10 @@ function groupByDate(data) {
 // Calculate stats for a group of readings
 function calculateStats(items) {
   const values = items.map(item => parseValue(item.value).temperature);
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const avg = values.reduce((a, b) => a + b, 0) / values.length;
+  const min = celsiusToFahrenheit(Math.min(...values));
+  const max = celsiusToFahrenheit(Math.max(...values));
+  const avgC = values.reduce((a, b) => a + b, 0) / values.length;
+  const avg = celsiusToFahrenheit(avgC);
   return { min, max, avg, count: items.length };
 }
 
@@ -142,9 +148,9 @@ function buildTable(data) {
           <span class="date-label">${dateKey}</span>
           <span class="date-stats">
             <span>${stats.count} reading${stats.count !== 1 ? 's' : ''}</span>
-            <span>Min: ${stats.min.toFixed(1)}°C</span>
-            <span>Max: ${stats.max.toFixed(1)}°C</span>
-            <span>Avg: ${stats.avg.toFixed(1)}°C</span>
+            <span>Min: ${stats.min.toFixed(1)}°F</span>
+            <span>Max: ${stats.max.toFixed(1)}°F</span>
+            <span>Avg: ${stats.avg.toFixed(1)}°F</span>
           </span>
         </td>
       </tr>
@@ -153,9 +159,10 @@ function buildTable(data) {
     // Individual data rows (hidden by default)
     items.forEach(item => {
       const parsed = parseValue(item.value);
+      const tempF = celsiusToFahrenheit(parsed.temperature);
       html += `
         <tr class="data-row" data-date-group="${dateKey}">
-          <td class="value-cell">${parsed.temperature.toFixed(1)} °C</td>
+          <td class="value-cell">${tempF.toFixed(1)} °F</td>
           <td>${parsed.node}</td>
           <td>${formatTime(item.created_at)}</td>
           <td>${formatRelativeTime(item.created_at)}</td>
@@ -176,7 +183,8 @@ function updateCurrentReading(data) {
   if (data && data.length > 0) {
     const latest = data[0];
     const parsed = parseValue(latest.value);
-    currentValueEl.textContent = `${parsed.temperature.toFixed(1)} °C`;
+    const tempF = celsiusToFahrenheit(parsed.temperature);
+    currentValueEl.textContent = `${tempF.toFixed(1)} °F`;
     currentTimeEl.textContent = `Last updated: ${formatRelativeTime(latest.created_at)}`;
   } else {
     currentValueEl.textContent = '--';
