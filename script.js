@@ -1,5 +1,17 @@
 const url = 'https://io.adafruit.com/api/v2/johnnynuss10/feeds/johnnyfeed/data/';
 
+// Get the node parameter from URL
+const urlParams = new URLSearchParams(window.location.search);
+const selectedNode = urlParams.get('node');
+
+// Update page title based on selected node
+if (selectedNode) {
+  const titleElement = document.getElementById('page-title');
+  if (titleElement) {
+    titleElement.textContent = `John Temps - Node ${selectedNode}`;
+  }
+}
+
 // Format date for display
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -172,6 +184,18 @@ function updateCurrentReading(data) {
   }
 }
 
+// Filter data by selected node
+function filterDataByNode(data) {
+  if (!selectedNode) {
+    return data; // Return all data if no node is selected
+  }
+
+  return data.filter(item => {
+    const parsed = parseValue(item.value);
+    return parsed.node === parseInt(selectedNode);
+  });
+}
+
 // Fetch and display the feed data
 function loadFeed() {
   fetch(url)
@@ -180,8 +204,9 @@ function loadFeed() {
       return res.json();
     })
     .then(data => {
-      updateCurrentReading(data);
-      document.getElementById('data-table').innerHTML = buildTable(data);
+      const filteredData = filterDataByNode(data);
+      updateCurrentReading(filteredData);
+      document.getElementById('data-table').innerHTML = buildTable(filteredData);
     })
     .catch(err => {
       console.error('Error fetching data:', err);

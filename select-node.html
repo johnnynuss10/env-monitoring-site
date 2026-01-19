@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>Select Node | John Temps</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      color: #fff;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-size: 2.5rem;
+      color: #00d9ff;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #aaa;
+      margin-bottom: 3rem;
+      font-size: 1.1rem;
+    }
+
+    .back-link {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .back-link a {
+      color: #00d9ff;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .back-link a:hover {
+      color: #00ff88;
+    }
+
+    .nodes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .node-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+      text-decoration: none;
+      color: #fff;
+      display: block;
+    }
+
+    .node-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(0, 217, 255, 0.5);
+      background: rgba(0, 217, 255, 0.1);
+    }
+
+    .node-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .node-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #00d9ff;
+      margin-bottom: 0.5rem;
+    }
+
+    .node-stats {
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: #888;
+      font-size: 1.2rem;
+    }
+
+    .error {
+      text-align: center;
+      padding: 3rem;
+      color: #ff6b6b;
+      font-size: 1.2rem;
+    }
+
+    .all-nodes-card {
+      background: linear-gradient(135deg, rgba(0, 217, 255, 0.2), rgba(0, 255, 136, 0.2));
+      border-color: rgba(0, 217, 255, 0.3);
+    }
+
+    .all-nodes-card:hover {
+      border-color: rgba(0, 217, 255, 0.7);
+      background: linear-gradient(135deg, rgba(0, 217, 255, 0.3), rgba(0, 255, 136, 0.3));
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Select Node</h1>
+    <p class="subtitle">Choose a sensor node to view its temperature logs</p>
+    <p class="back-link"><a href="index.html">&larr; Back to Home</a></p>
+
+    <div id="nodes-container">
+      <p class="loading">Loading available nodes...</p>
+    </div>
+  </div>
+
+  <script>
+    const url = 'https://io.adafruit.com/api/v2/johnnynuss10/feeds/johnnyfeed/data/';
+
+    // Parse the value field to extract temperature and node
+    function parseValue(valueString) {
+      const parts = valueString.split(',');
+      return {
+        temperature: parseFloat(parts[0]),
+        node: parseInt(parts[1])
+      };
+    }
+
+    // Get unique nodes and their stats from the data
+    function extractNodes(data) {
+      const nodesMap = new Map();
+
+      data.forEach(item => {
+        const parsed = parseValue(item.value);
+        const nodeId = parsed.node;
+
+        if (!nodesMap.has(nodeId)) {
+          nodesMap.set(nodeId, {
+            id: nodeId,
+            readings: [],
+            lastReading: null
+          });
+        }
+
+        const nodeData = nodesMap.get(nodeId);
+        nodeData.readings.push(parsed.temperature);
+
+        // Track the most recent reading
+        if (!nodeData.lastReading || new Date(item.created_at) > new Date(nodeData.lastReading.time)) {
+          nodeData.lastReading = {
+            temperature: parsed.temperature,
+            time: item.created_at
+          };
+        }
+      });
+
+      return Array.from(nodesMap.values()).sort((a, b) => a.id - b.id);
+    }
+
+    // Calculate stats for a node
+    function calculateNodeStats(readings) {
+      if (readings.length === 0) return null;
+
+      const min = Math.min(...readings);
+      const max = Math.max(...readings);
+      const avg = readings.reduce((a, b) => a + b, 0) / readings.length;
+
+      return { min, max, avg, count: readings.length };
+    }
+
+    // Format relative time
+    function formatRelativeTime(dateString) {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffSecs = Math.floor(diffMs / 1000);
+      const diffMins = Math.floor(diffSecs / 60);
+      const diffHours = Math.floor(diffMins / 60);
+      const diffDays = Math.floor(diffHours / 24);
+
+      if (diffSecs < 60) return 'Just now';
+      if (diffMins < 60) return `${diffMins} min ago`;
+      if (diffHours < 24) return `${diffHours} hr ago`;
+      return `${diffDays} day${diffDays !== 1 ? 's' : ''} ago`;
+    }
+
+    // Build the nodes grid HTML
+    function buildNodesGrid(nodes) {
+      let html = '<div class="nodes-grid">';
+
+      // Add "All Nodes" option
+      html += `
+        <a href="feed.html" class="node-card all-nodes-card">
+          <div class="node-icon">&#127760;</div>
+          <div class="node-title">All Nodes</div>
+          <div class="node-stats">View all temperature data</div>
+        </a>
+      `;
+
+      // Add individual node cards
+      nodes.forEach(node => {
+        const stats = calculateNodeStats(node.readings);
+        const lastTemp = node.lastReading ? node.lastReading.temperature.toFixed(1) : '--';
+        const lastTime = node.lastReading ? formatRelativeTime(node.lastReading.time) : '';
+
+        html += `
+          <a href="feed.html?node=${node.id}" class="node-card">
+            <div class="node-icon">&#128225;</div>
+            <div class="node-title">Node ${node.id}</div>
+            <div class="node-stats">
+              ${lastTemp}°C ${lastTime}<br>
+              ${stats.count} readings
+            </div>
+          </a>
+        `;
+      });
+
+      html += '</div>';
+      return html;
+    }
+
+    // Fetch and display nodes
+    function loadNodes() {
+      fetch(url)
+        .then(res => {
+          if (!res.ok) throw new Error('Network response was not ok');
+          return res.json();
+        })
+        .then(data => {
+          const nodes = extractNodes(data);
+
+          if (nodes.length === 0) {
+            document.getElementById('nodes-container').innerHTML =
+              '<p class="loading">No nodes found in the data</p>';
+          } else {
+            document.getElementById('nodes-container').innerHTML = buildNodesGrid(nodes);
+          }
+        })
+        .catch(err => {
+          console.error('Error fetching data:', err);
+          document.getElementById('nodes-container').innerHTML =
+            '<p class="error">Error loading nodes. Please try again later.</p>';
+        });
+    }
+
+    // Initial load
+    loadNodes();
+  </script>
+</body>
+</html>
