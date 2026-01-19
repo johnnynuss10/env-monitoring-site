@@ -1,5 +1,58 @@
 const url = 'https://io.adafruit.com/api/v2/johnnynuss10/feeds/johnnyfeed/data/';
 
+// Get node parameter from URL
+function getNodeFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('node');
+}
+
+// Extract node identifier from data item (same logic as nodes.js)
+function extractNode(item) {
+  if (item.node !== undefined) {
+    return item.node;
+  }
+  if (item.metadata && item.metadata.node !== undefined) {
+    return item.metadata.node;
+  }
+  const value = String(item.value);
+  const colonMatch = value.match(/^(\d+)[:]/);
+  if (colonMatch) {
+    return colonMatch[1];
+  }
+  const commaMatch = value.match(/^(\d+),/);
+  if (commaMatch) {
+    return commaMatch[1];
+  }
+  if (item.feed_key) {
+    const nodeMatch = item.feed_key.match(/node[_-]?(\d+)/i);
+    if (nodeMatch) {
+      return nodeMatch[1];
+    }
+  }
+  return '3'; // Default node
+}
+
+// Extract temperature value (remove node prefix if present)
+function extractTemperature(item) {
+  const value = String(item.value);
+  const tempMatch = value.match(/[\d.]+$/);
+  return tempMatch ? tempMatch[0] : value;
+}
+
+// Filter data by node
+function filterDataByNode(data, node) {
+  if (!node) return data; // No filter
+  return data.filter(item => extractNode(item) === node);
+}
+
+// Update page title with node info
+function updatePageTitle(node) {
+  const titleEl = document.getElementById('page-title');
+  if (titleEl && node) {
+    titleEl.textContent = `John Temps - Node ${node}`;
+  }
+}
+
 // Format date for display
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -130,9 +183,10 @@ function buildTable(data) {
 
     // Individual data rows (hidden by default)
     items.forEach(item => {
+      const temp = extractTemperature(item);
       html += `
         <tr class="data-row" data-date-group="${dateKey}">
-          <td class="value-cell">${item.value} °C</td>
+          <td class="value-cell">${temp} °C</td>
           <td>${formatTime(item.created_at)}</td>
           <td>${formatRelativeTime(item.created_at)}</td>
         </tr>
@@ -151,7 +205,8 @@ function updateCurrentReading(data) {
 
   if (data && data.length > 0) {
     const latest = data[0];
-    currentValueEl.textContent = `${latest.value} °C`;
+    const temp = extractTemperature(latest);
+    currentValueEl.textContent = `${temp} °C`;
     currentTimeEl.textContent = `Last updated: ${formatRelativeTime(latest.created_at)}`;
   } else {
     currentValueEl.textContent = '--';
@@ -161,14 +216,24 @@ function updateCurrentReading(data) {
 
 // Fetch and display the feed data
 function loadFeed() {
+  const selectedNode = getNodeFromURL();
+
   fetch(url)
     .then(res => {
       if (!res.ok) throw new Error('Network response was not ok');
       return res.json();
     })
     .then(data => {
-      updateCurrentReading(data);
-      document.getElementById('data-table').innerHTML = buildTable(data);
+      // Filter data by node if specified
+      const filteredData = filterDataByNode(data, selectedNode);
+
+      // Update page title if node is specified
+      if (selectedNode) {
+        updatePageTitle(selectedNode);
+      }
+
+      updateCurrentReading(filteredData);
+      document.getElementById('data-table').innerHTML = buildTable(filteredData);
     })
     .catch(err => {
       console.error('Error fetching data:', err);
