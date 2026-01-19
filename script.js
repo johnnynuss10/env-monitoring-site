@@ -62,9 +62,16 @@ function groupByDate(data) {
   return groups;
 }
 
+// Extract temperature value from node:temp format (e.g., "3:25.5" -> "25.5")
+function extractTemperature(item) {
+  const value = String(item.value);
+  const tempMatch = value.match(/[\d.]+$/);
+  return tempMatch ? tempMatch[0] : value;
+}
+
 // Calculate stats for a group of readings
 function calculateStats(items) {
-  const values = items.map(item => parseFloat(item.value));
+  const values = items.map(item => parseFloat(extractTemperature(item)));
   const min = Math.min(...values);
   const max = Math.max(...values);
   const avg = values.reduce((a, b) => a + b, 0) / values.length;
@@ -132,7 +139,7 @@ function buildTable(data) {
     items.forEach(item => {
       html += `
         <tr class="data-row" data-date-group="${dateKey}">
-          <td class="value-cell">${item.value} °C</td>
+          <td class="value-cell">${extractTemperature(item)} °C</td>
           <td>${formatTime(item.created_at)}</td>
           <td>${formatRelativeTime(item.created_at)}</td>
         </tr>
@@ -151,7 +158,7 @@ function updateCurrentReading(data) {
 
   if (data && data.length > 0) {
     const latest = data[0];
-    currentValueEl.textContent = `${latest.value} °C`;
+    currentValueEl.textContent = `${extractTemperature(latest)} °C`;
     currentTimeEl.textContent = `Last updated: ${formatRelativeTime(latest.created_at)}`;
   } else {
     currentValueEl.textContent = '--';
