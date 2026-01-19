@@ -117,7 +117,7 @@ function groupByDate(data) {
 
 // Calculate stats for a group of readings
 function calculateStats(items) {
-  const values = items.map(item => parseFloat(item.value));
+  const values = items.map(item => parseFloat(extractTemperature(item)));
   const min = Math.min(...values);
   const max = Math.max(...values);
   const avg = values.reduce((a, b) => a + b, 0) / values.length;
