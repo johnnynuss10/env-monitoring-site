@@ -106,6 +106,61 @@
       font-weight: 600;
     }
 
+    .date-group-header {
+      cursor: pointer;
+      background: rgba(0, 217, 255, 0.1);
+    }
+
+    .date-group-header:hover {
+      background: rgba(0, 217, 255, 0.2);
+    }
+
+    .expand-btn {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      text-align: center;
+      line-height: 18px;
+      background: rgba(0, 217, 255, 0.3);
+      border-radius: 4px;
+      margin-right: 8px;
+      font-weight: bold;
+      font-size: 14px;
+      color: #00d9ff;
+      transition: transform 0.2s ease;
+    }
+
+    .date-group-header.expanded .expand-btn {
+      transform: rotate(45deg);
+    }
+
+    .date-label {
+      font-weight: 600;
+      color: #00d9ff;
+    }
+
+    .date-stats {
+      color: #888;
+      font-size: 0.85rem;
+      margin-left: 1rem;
+    }
+
+    .date-stats span {
+      margin-right: 1rem;
+    }
+
+    .data-row {
+      display: none;
+    }
+
+    .data-row.visible {
+      display: table-row;
+    }
+
+    .data-row td:first-child {
+      padding-left: 2.5rem;
+    }
+
     .loading {
       text-align: center;
       padding: 2rem;
