@@ -61,104 +61,39 @@
       font-size: 0.9rem;
     }
 
-    .data-table-container {
+    .device-form {
+      margin-top: 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+
+    .device-form input {
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
       background: rgba(255, 255, 255, 0.05);
-      border-radius: 16px;
-      padding: 1.5rem;
-      backdrop-filter: blur(10px);
+      color: #fff;
+      font-size: 1rem;
     }
 
-    .data-table-container h2 {
-      margin-bottom: 1rem;
-      font-size: 1.2rem;
-      color: #ccc;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      padding: 0.75rem 1rem;
-      text-align: left;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    th {
+    .device-form input::placeholder {
       color: #888;
-      font-weight: 500;
-      text-transform: uppercase;
-      font-size: 0.75rem;
-      letter-spacing: 1px;
     }
 
-    td {
-      color: #ddd;
-    }
-
-    tr:hover {
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .value-cell {
-      color: #00d9ff;
+    .device-form button {
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      border: none;
+      background: #00d9ff;
+      color: #16213e;
       font-weight: 600;
-    }
-
-    .date-group-header {
       cursor: pointer;
-      background: rgba(0, 217, 255, 0.1);
+      transition: background 0.3s;
     }
 
-    .date-group-header:hover {
-      background: rgba(0, 217, 255, 0.2);
-    }
-
-    .expand-btn {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      text-align: center;
-      line-height: 18px;
-      background: rgba(0, 217, 255, 0.3);
-      border-radius: 4px;
-      margin-right: 8px;
-      font-weight: bold;
-      font-size: 14px;
-      color: #00d9ff;
-      transition: transform 0.2s ease;
-    }
-
-    .date-group-header.expanded .expand-btn {
-      transform: rotate(45deg);
-    }
-
-    .date-label {
-      font-weight: 600;
-      color: #00d9ff;
-    }
-
-    .date-stats {
-      color: #888;
-      font-size: 0.85rem;
-      margin-left: 1rem;
-    }
-
-    .date-stats span {
-      margin-right: 1rem;
-    }
-
-    .data-row {
-      display: none;
-    }
-
-    .data-row.visible {
-      display: table-row;
-    }
-
-    .data-row td:first-child {
-      padding-left: 2.5rem;
+    .device-form button:hover {
+      background: #00ff88;
     }
 
     .loading {
@@ -194,12 +129,9 @@
       <h2>Current Temperature</h2>
       <div id="current-value" class="current-value">--</div>
       <div id="current-time" class="current-time"></div>
-    </div>
-
-    <div class="data-table-container">
-      <h2>Recent Readings</h2>
-      <div id="data-table">
-        <p class="loading">Loading data...</p>
+      <div class="device-form">
+        <input type="text" id="deviceIdFromForm" placeholder="Enter device ID" />
+        <button type="button" id="submitButton">Get Reading</button>
       </div>
     </div>
 
