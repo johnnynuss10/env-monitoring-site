@@ -1,4 +1,5 @@
 let msgOut = "ESP32_ad025C"
+//let msgOut = null 
 
 async function displayCustomText(){
     
@@ -31,6 +32,23 @@ async function displayCustomText(){
     }
 }
 
+// print when submit button pressed
+function printTextBox(){
+    document.getElementById("submitButton").addEventListener("click", function() {
+        msgOut = document.getElementById("deviceIdFromForm").value;
+        console.log("New msgOut: ", msgOut);
+
+        displayCustomText();
+    })
+    
+
+}
+
+printTextBox();
 
 
-displayCustomText();
+//displayCustomText();
+
+
+//setInterval(printTextBox, 100);
+
