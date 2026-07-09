@@ -1,0 +1,5 @@
+The webpage will have buttons for each individual node with telemetry found in the
+database. 
+For now, display the most recent reading for each node number
+
+The top of the page will have a device ID entry text box 

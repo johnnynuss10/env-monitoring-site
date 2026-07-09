@@ -1,6 +1,6 @@
-let msgOut = "ESP32_ad025C"
-//let msgOut = null 
-
+//let msgOut = "ESP32_ad025C"
+let msgOut = null 
+let visibleNodes = [];
 async function displayCustomText(){
     
     // take msgOut and send it to aws lambda
@@ -22,8 +22,8 @@ async function displayCustomText(){
             throw new Error(`Response status: ${response.status}`);
     }
         const result = await response.json();
+        // identify nodes in response
         document.getElementById("output").textContent =
-            //JSON.stringify(result, null, 2);
             result.device.latest_telemetry.tempC;
         console.log(result);
 
