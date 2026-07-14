@@ -1,5 +1,18 @@
+The top of the page will have a device ID entry text box 
+
 The webpage will have buttons for each individual node with telemetry found in the
 database. 
-For now, display the most recent reading for each node number
 
-The top of the page will have a device ID entry text box 
+One http request will retreive from newestTelemetry, giving a list of nodes associated with the user's device
+Another http request will specify a node and number of data points, for viewing historical temp values 
+
+To do list
+AWS:
+1. Create displayNodeData lambda function to grab n entries for a specific node # and deviceID 
+
+webapp:
+1. Add support for displayNodeData lambda function, include option for setting time period (1 day, 3 days, 1 week, etc) and graph
+
+
+Progress:
+7/10/26 7:19 PM - left off writing OpenNodeData(), GetNodeSpecificTelemetry needs to be implemented
