@@ -125,6 +125,10 @@ async function OpenNodeData(){
                     // print temp values from node
                     console.log(result);
 
+                    // generate and populate graph, generate buttons for changing time scale
+                    tempChart = document.createElement("canvas");
+                    
+
                 } catch (error) {
                     console.error(error);
                 }

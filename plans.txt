@@ -8,10 +8,10 @@ Another http request will specify a node and number of data points, for viewing 
 
 To do list
 AWS:
-1. Create displayNodeData lambda function to grab n entries for a specific node # and deviceID 
+1. 
 
 webapp:
-1. Add support for displayNodeData lambda function, include option for setting time period (1 day, 3 days, 1 week, etc) and graph
+1. Add support for OpenNodeData() to display n messages in a temp vs time graph
 
 
 Progress:
