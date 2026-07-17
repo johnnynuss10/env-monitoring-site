@@ -111,7 +111,7 @@ async function OpenNodeData(){
                 const payload = {
                     deviceID: msgOut,
                     nodeNum: nodeKeys[i],
-                    numReadings: 100
+                    numReadings: 200
                 };
 
                 // fetch request here using POST method
@@ -133,6 +133,8 @@ async function OpenNodeData(){
                     console.log(result);
 
                     // generate domain and range for graph
+                    let minRangeVal = 0
+                    let maxRangeVal = 0
                     for (let i = 0; i < result.telemetryReadings.length; i++){
                         timeVal = result.telemetryReadings[i].timeUTC;
                         console.log(timeVal);
@@ -143,7 +145,7 @@ async function OpenNodeData(){
                         console.log(estTime);
                         dataDomain[result.telemetryReadings.length - i - 1] = estTime;
 
-                        dataRange[result.telemetryReadings.length - i - 1] = Number(result.telemetryReadings[i].tempC) * (9/5) + 32;
+                        dataRange[result.telemetryReadings.length - i - 1] = (Number(result.telemetryReadings[i].tempC) * (9/5) + 32).toFixed(1);
                     }
 
                     // generate and populate graph, generate buttons for changing time scale
@@ -155,9 +157,18 @@ async function OpenNodeData(){
                             labels: dataDomain,
                             datasets: [{
                                 label: 'Temperature',
-                                data: dataRange
+                                data: dataRange,
+                                tension: 0.3
                             }]
                         },
+                        options: {
+                            scales: {
+                                y: {
+                                    min: 50,
+                                    max: 90
+                                }
+                            }
+                        }
                     });
                     
 
