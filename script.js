@@ -2,6 +2,9 @@ let msgOut = null
 let visibleNodes = [];
 let numNodes = 0;
 let nodeKeys = []
+let tempChart = null;
+let dataDomain = [];
+let dataRange = [];
 
 async function ListNodes(){
 
@@ -101,10 +104,14 @@ async function OpenNodeData(){
             visibleNodes[i].addEventListener("click", async function() {
                 // on click, send nodeNum and deviceID to get 3 hours worth of data points (30 data points)
 
+                if (tempChart){
+                    tempChart.remove();
+                }
+
                 const payload = {
                     deviceID: msgOut,
                     nodeNum: nodeKeys[i],
-                    numReadings: 5
+                    numReadings: 100
                 };
 
                 // fetch request here using POST method
@@ -125,8 +132,33 @@ async function OpenNodeData(){
                     // print temp values from node
                     console.log(result);
 
+                    // generate domain and range for graph
+                    for (let i = 0; i < result.telemetryReadings.length; i++){
+                        timeVal = result.telemetryReadings[i].timeUTC;
+                        console.log(timeVal);
+                        date = new Date(Number(timeVal));
+                        estTime = date.toLocaleString("en-US", {
+                            timeZone: "America/New_York"
+                        });
+                        console.log(estTime);
+                        dataDomain[result.telemetryReadings.length - i - 1] = estTime;
+
+                        dataRange[result.telemetryReadings.length - i - 1] = Number(result.telemetryReadings[i].tempC) * (9/5) + 32;
+                    }
+
                     // generate and populate graph, generate buttons for changing time scale
                     tempChart = document.createElement("canvas");
+                    document.body.appendChild(tempChart);
+                    new Chart(tempChart, {
+                        type: 'line',
+                        data: {
+                            labels: dataDomain,
+                            datasets: [{
+                                label: 'Temperature',
+                                data: dataRange
+                            }]
+                        },
+                    });
                     
 
                 } catch (error) {
