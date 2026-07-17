@@ -6,6 +6,8 @@ let tempChart = null;
 let dataDomain = [];
 let dataRange = [];
 
+let totalReadings = 1000;
+
 async function ListNodes(){
 
     const payload ={
@@ -29,10 +31,13 @@ async function ListNodes(){
         // Create a new button for each node found 
         numNodes = Object.keys(result).length;
         nodeKeys = Object.keys(result);
+        const nodesContainer = document.getElementById("nodes-grid");
         for (let i = 0; i < numNodes; i++){
                 visibleNodes[i] = document.createElement("button");
+                visibleNodes[i].className = "node-card";
                 visibleNodes[i].textContent = `Node ${nodeKeys[i]}`;
-                document.body.appendChild(visibleNodes[i]);
+                //document.body.appendChild(visibleNodes[i]);
+                nodesContainer.appendChild(visibleNodes[i]);
             }
         console.log(numNodes);
 
@@ -106,12 +111,13 @@ async function OpenNodeData(){
 
                 if (tempChart){
                     tempChart.remove();
+                    chartContainer.remove();
                 }
 
                 const payload = {
                     deviceID: msgOut,
                     nodeNum: nodeKeys[i],
-                    numReadings: 200
+                    numReadings: totalReadings
                 };
 
                 // fetch request here using POST method
@@ -133,7 +139,7 @@ async function OpenNodeData(){
                     console.log(result);
 
                     // generate domain and range for graph
-                    let minRangeVal = 0
+                    let minRangeVal = result.telemetryReadings[0].tempC;
                     let maxRangeVal = 0
                     for (let i = 0; i < result.telemetryReadings.length; i++){
                         timeVal = result.telemetryReadings[i].timeUTC;
@@ -146,11 +152,27 @@ async function OpenNodeData(){
                         dataDomain[result.telemetryReadings.length - i - 1] = estTime;
 
                         dataRange[result.telemetryReadings.length - i - 1] = (Number(result.telemetryReadings[i].tempC) * (9/5) + 32).toFixed(1);
+                       
+                        if (Number(result.telemetryReadings[i].tempC) > maxRangeVal){
+                            maxRangeVal = Number(result.telemetryReadings[i].tempC);
+                        }
+
+                        if (Number(result.telemetryReadings[i].tempC) < minRangeVal){
+                            minRangeVal = Number(result.telemetryReadings[i].tempC);
+                        }
                     }
+                    maxRangeVal = parseInt(maxRangeVal * 9/5 + 32 + 2);
+                    minRangeVal = parseInt(minRangeVal * 9/5 + 32 - 2);
+
 
                     // generate and populate graph, generate buttons for changing time scale
+                    chartContainer = document.createElement("div");
+                    chartContainer.style.width = "1000px";
+                    chartContainer.style.height = "1000px";
+                    chartContainer.style.margin = "0 auto";
                     tempChart = document.createElement("canvas");
-                    document.body.appendChild(tempChart);
+                    document.body.appendChild(chartContainer);
+                    chartContainer.appendChild(tempChart);
                     new Chart(tempChart, {
                         type: 'line',
                         data: {
@@ -163,13 +185,40 @@ async function OpenNodeData(){
                         },
                         options: {
                             scales: {
+                                x: {
+                                    border: {
+                                        display: true,
+                                        color: 'white',
+                                        width: 2
+                                    },
+                                    ticks: {
+                                        color: 'white'
+                                    }
+
+                                },
+
                                 y: {
-                                    min: 50,
-                                    max: 90
+                                    min: minRangeVal,
+                                    max: maxRangeVal,
+
+                                    // grid: {
+                                    //     display: true,
+                                    //     color: 'rgba(255, 255, 255, 1)',
+                                    //     linewidth: 5
+                                    // },
+                                    border: {
+                                        display: true,
+                                        color: 'white', //rgba(125, 250, 231, 0.6)
+                                        width: 2
+                                    },
+                                    ticks: {
+                                        color: 'white'
+                                    }
                                 }
                             }
                         }
                     });
+                    tempChart.style.width = "100px";                   
                     
 
                 } catch (error) {

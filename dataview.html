@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="dataview.css">
+    <title>Document</title>
+    <style>
+        .hero p {
+            font-size: 1.4rem;
+            color: #aaa;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="index.html" class="logo">John Temps</a>
+
+            <div class="nav-links">
+                <!--
+                <a href="#features">Features</a>
+                <a href="select-node.html">Live Data</a>
+                -->
+            </div>
+        </nav>
+    </div>
+
+    <div
+        style="
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        ">
+        <input
+        type="text"
+        id="deviceIdFromForm"
+        placeholder="Enter your device ID"
+        >
+        <button id="submitButton">Submit</button>
+        
+    </div>
+
+    <section class="hero">
+        <p>Don't have a device ID? Enter: ESP32_ad025C</p>
+        <p>to view live sample data</p>
+    </section>
+
+
+    <div>
+        <div id="output"></div>
+    </div>
+    <div id="nodes-grid" class="nodes-grid"></div>
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

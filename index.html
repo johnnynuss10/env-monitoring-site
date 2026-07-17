@@ -1,34 +1,291 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>John Temps - Temperature Monitoring Made Simple</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scrollbar-gutter: stable;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Navigation */
+    nav {
+      padding: 1.5rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #00d9ff;
+    }
+
+    .nav-links a {
+      color: #ccc;
+      text-decoration: none;
+      margin-left: 2rem;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #00d9ff;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 6rem 0;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(90deg, #00d9ff, #00ff88);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.4rem;
+      color: #aaa;
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.6;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(90deg, #00d9ff, #00ff88);
+      color: #1a1a2e;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1rem;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3);
+    }
+
+    /* Features Section */
+    .features {
+      padding: 5rem 0;
+    }
+
+    .features h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 3rem;
+      color: #fff;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(0, 217, 255, 0.3);
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.75rem;
+      color: #00d9ff;
+    }
+
+    .feature-card p {
+      color: #aaa;
+      line-height: 1.6;
+    }
+
+    /* Stats Section */
+    .stats {
+      padding: 4rem 0;
+      text-align: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+    }
+
+    .stat-item {
+      padding: 2rem;
+    }
+
+    .stat-number {
+      font-size: 3rem;
+      font-weight: bold;
+      color: #00d9ff;
+    }
+
+    .stat-label {
+      color: #888;
+      margin-top: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 0.85rem;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 5rem 0;
+      text-align: center;
+    }
+
+    .cta-section h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .cta-section p {
+      color: #aaa;
+      margin-bottom: 2rem;
+    }
+
+    /* Footer */
+    footer {
+      padding: 3rem 0;
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    footer p {
+      color: #666;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero p {
+        font-size: 1.1rem;
+      }
+
+      nav {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .nav-links a {
+        margin-left: 1rem;
+        margin-right: 1rem;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <nav>
+      <div class="logo">John Temps</div>
+      <div class="nav-links">
+        <!--
+        <a href="#features">Features</a>
+        <a href="select-node.html">Live Data</a>
+        -->
+      </div>
+    </nav>
 
-    <div
-        style="
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        ">
-        <input
-        type="text"
-        id="deviceIdFromForm"
-        placeholder="Enter your device ID"
-        >
-        <button id="submitButton">Submit</button>
-    </div>
+    <section class="hero">
+      <h1>Temperature Monitoring Made Simple</h1>
+      <p>Real-time temperature tracking for your environment. Get instant insights and never miss a critical reading again.</p>
+      <a href="dataview.html" class="cta-button">View Live Data</a>
+    </section>
 
-    <div>
-        <div id="output"></div>
-    </div>
+    <section id="features" class="features">
+      <h2>Why John Temps?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">&#127777;</div>
+          <h3>Real-Time Monitoring</h3>
+          <p>Get live temperature readings updated every 6 minutes. Always know what's happening in your environment.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128202;</div>
+          <h3>Historical Data</h3>
+          <p>Access your complete temperature history. Track trends and patterns over time with our detailed logs.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#128241;</div>
+          <h3>Works Everywhere</h3>
+          <p>Responsive design means you can check your temperatures from any device - desktop, tablet, or phone.</p>
+        </div>
+      </div>
+    </section>
 
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.js"></script>
-    <script src="script.js"></script>
+    <section class="stats">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">Monitoring</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">6min</div>
+          <div class="stat-label">Refresh Rate</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Uptime</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <h2>Ready to see your temperature data?</h2>
+      <p>Check out the live feed now and see real-time readings from our sensors.</p>
+      <a href="dataview.html" class="cta-button">Go to Live Data</a>
+    </section>
+
+    <footer>
+      <p>&copy; 2026 John Temps. Temperature monitoring made awesome.</p>
+    </footer>
+  </div>
 </body>
 </html>

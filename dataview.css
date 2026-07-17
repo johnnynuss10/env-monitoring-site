@@ -1,0 +1,125 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  min-height: 100vh;
+  color: #fff;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+nav {
+  padding: 1.5rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #00d9ff;
+  text-decoration: none;
+}
+
+.nav-links a {
+  color: #ccc;
+  text-decoration: none;
+  margin-left: 2rem;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover {
+  color: #00d9ff;
+}
+
+input#deviceIdFromForm {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: 50px 0 0 50px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-right: none;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  outline: none;
+  min-width: 260px;
+}
+
+input#deviceIdFromForm::placeholder {
+  color: #888;
+}
+
+input#deviceIdFromForm:focus {
+  border-color: rgba(0, 217, 255, 0.5);
+}
+
+button#submitButton {
+  display: inline-block;
+  background: linear-gradient(90deg, #00d9ff, #00ff88);
+  color: #1a1a2e;
+  padding: 1rem 2rem;
+  border-radius: 0 50px 50px 0;
+  border: none;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+button#submitButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3);
+}
+
+.nodes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 2rem auto 0;
+  padding: 0 2rem;
+}
+
+.node-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.node-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(0, 217, 255, 0.5);
+  background: rgba(0, 217, 255, 0.1);
+}
+
+#output {
+  max-width: 1200px;
+  margin: 2rem auto 0;
+  padding: 0 2rem;
+  color: #aaa;
+}
+
+
